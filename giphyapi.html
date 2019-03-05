@@ -9,22 +9,129 @@
 </head>
 
 <body>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script type="text/javascript">
-
-        $.ajax({
-            url: queryURL,
-            method: "GET"
-        }).then(function (response) {
-            console.log(response);
-        });
+    <div class="container">
+        <div id="buttons-view"></div>
 
 
+        <form id="giphy-form">
+            <label for="giphy-input">Add sports! </label>
+            <input type="text" id="giphy-input">
+            <br>
+
+
+            <input id="add-giphy" type="submit" value="Add a gif">
+        </form>
+        <div id="giphy-view"></div>
+
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script type="text/javascript">
+
+            var topics = ["basketball", "football", "baseball", "soccer"];
+
+
+            function renderButtons() {
+
+
+                $("#buttons-view").empty();
+
+
+                for (var i = 0; i < topics.length; i++) {
+                    var a = $("<button class='btn btn-info'>");
+
+                    a.addClass("giphy-btn");
+
+                    a.attr("data-name", topics[i]);
+
+                    a.text(topics[i]);
+
+                    $("#buttons-view").append(a);
+                }
+            }
+
+            function displayGifInfo() {
 
 
 
 
-    </script>
+
+                var giphy = $(this).attr("data-name");
+                var queryURL = "http://api.giphy.com/v1/gifs/search?q=&api_key=A2apk5mvRLWI8mv3ZtOYmbxLOtLxuqgh&limit=10";
+
+
+                $.ajax({
+                    url: queryURL,
+                    method: "GET"
+                }).then(function (response) {
+
+                    console.log(response);
+
+                    var results = response.data;
+
+                    for (var i = 0; i < results.length; i++) {
+
+                        var giphyDiv = $("<div class='sports'>");
+
+                        var rating = results[i].rating;
+
+                        var p = $("<p>").text("Rating: " + rating);
+
+                        var giphyImage = $("<img>");
+
+                        giphyImage.attr("src", results[i].images.fixed_height_still.url);
+                        giphyImage.attr("data-still", results[i].images.fixed_height_still.url);
+                        giphyImage.attr("data-animate", results[i].images.fixed_height.url);
+                        giphyImage.attr("data-state", "still");
+                        giphyImage.attr("class", "pause");
+
+
+                        giphyDiv.prepend(rating);
+                        giphyDiv.prepend(giphyImage);
+
+                        $("#giphy-view").prepend(giphyDiv);
+                    }
+
+                });
+            }
+
+
+                $("#add-giphy").on("click", function (event) {
+                    event.preventDefault();
+
+                    var giphy = $("#giphy-input").val().trim();
+
+
+                    topics.push(giphy);
+
+
+                    renderButtons();
+                });
+            
+
+
+
+
+                $("giphy-view").on("click", ".pause", function () {
+
+                    var state = $(this).attr("data-state");
+
+                    if (state === "still") {
+                        $(this).attr("src", $(this).attr("data-animate"));
+                        $(this).attr("data-state", "animate");
+                    } else {
+                        $(this).attr("src", $(this).attr("data-still"));
+                        $(this).attr("data-state", "still");
+                    }
+                });
+
+                $(document).on("click", ".giphy-btn", displayGifInfo);
+
+                renderButtons();
+
+
+
+
+        </script>
 </body>
 
 </html>
