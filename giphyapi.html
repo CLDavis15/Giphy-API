@@ -64,7 +64,7 @@
                     method: "GET"
                 }).then(function (response) {
 
-                    console.log(response);
+                    // console.log(response);
 
                     var results = response.data;
 
@@ -85,8 +85,9 @@
                         giphyImage.attr("class", "pause");
 
 
-                        giphyDiv.prepend(rating);
+                        
                         giphyDiv.prepend(giphyImage);
+                        giphyDiv.prepend(p);
 
                         $("#giphy-view").prepend(giphyDiv);
                     }
@@ -111,9 +112,10 @@
 
 
 
-                $("giphy-view").on("click", ".pause", function () {
+                $("#giphy-view").on("click", ".pause", function () {
 
                     var state = $(this).attr("data-state");
+                    
 
                     if (state === "still") {
                         $(this).attr("src", $(this).attr("data-animate"));
